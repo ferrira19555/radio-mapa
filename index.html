@@ -473,10 +473,48 @@
       border: 1px solid rgba(120,244,178,.18);
     }
 
+    .station-item.favorite {
+      border-color: rgba(240,202,118,.68);
+      box-shadow: inset 0 0 12px rgba(240,202,118,.12);
+    }
+
+    .station-row {
+      display: grid;
+      grid-template-columns: 1fr 34px;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
     .station-item strong {
       display: block;
       font-size: .78rem;
       line-height: 1.25;
+    }
+
+    .favorite-button {
+      width: 34px;
+      height: 32px;
+      min-height: 0;
+      padding: 0;
+      border-radius: 6px;
+      border: 1px solid rgba(240,202,118,.45);
+      background: rgba(32,21,15,.82);
+      color: var(--brass-light);
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .favorite-button.active {
+      background: linear-gradient(180deg, #ffd879, #c39135);
+      color: #27170d;
+    }
+
+    .favorite-empty {
+      color: rgba(231,249,239,.66);
+      font-size: .72rem;
+      line-height: 1.3;
+      padding: 2px 0 4px;
     }
 
     audio { display: none; }
@@ -1052,6 +1090,8 @@
     const countryStationCache = {};
     let started = false;
     let scanIndex = 0;
+    const favoritesKey = "radioMapaFavoritesV1";
+    let favoriteStations = loadFavoriteStations();
 
     const brazilStates = [
       ["AC", "Acre", "Rio Branco"], ["AL", "Alagoas", "Maceió"], ["AP", "Amapá", "Macapá"], ["AM", "Amazonas", "Manaus"], ["BA", "Bahia", "Salvador"], ["CE", "Ceará", "Fortaleza"], ["DF", "Distrito Federal", "Brasília"], ["ES", "Espírito Santo", "Vitória"], ["GO", "Goiás", "Goiânia"],
@@ -1383,8 +1423,89 @@
       return `${station.name} - ${suffix}`;
     }
 
+    function favoriteId(station) {
+      return normalizeText(`${station.name || ""}|${station.stream || ""}|${station.place || station.country || ""}`);
+    }
+
+    function loadFavoriteStations() {
+      try {
+        const stored = JSON.parse(localStorage.getItem(favoritesKey) || "[]");
+        return Array.isArray(stored) ? stored.filter((station) => station && station.name && station.stream) : [];
+      } catch (error) {
+        return [];
+      }
+    }
+
+    function saveFavoriteStations() {
+      localStorage.setItem(favoritesKey, JSON.stringify(favoriteStations.slice(0, 80)));
+    }
+
+    function isFavorite(station) {
+      const id = favoriteId(station);
+      return favoriteStations.some((favorite) => favoriteId(favorite) === id);
+    }
+
+    function toggleFavorite(station) {
+      const id = favoriteId(station);
+      if (isFavorite(station)) {
+        favoriteStations = favoriteStations.filter((favorite) => favoriteId(favorite) !== id);
+      } else {
+        favoriteStations.unshift({
+          name: station.name,
+          country: station.country || currentCountry,
+          place: station.place || station.searchLabel || station.country || currentCountry,
+          stream: station.stream,
+          searchLabel: station.searchLabel || ""
+        });
+      }
+      saveFavoriteStations();
+      renderStationItems(currentContinent);
+      markActiveDot();
+    }
+
+    function appendStationItem(station, continent, options = {}) {
+      const item = document.createElement("div");
+      item.className = "station-item";
+      item.tabIndex = 0;
+      item.setAttribute("role", "button");
+      item.classList.toggle("favorite", isFavorite(station));
+      const row = document.createElement("span");
+      row.className = "station-row";
+      const name = document.createElement("strong");
+      name.textContent = options.label || stationListLabel(station);
+      const favoriteButton = document.createElement("button");
+      favoriteButton.type = "button";
+      favoriteButton.className = "favorite-button";
+      favoriteButton.classList.toggle("active", isFavorite(station));
+      favoriteButton.textContent = isFavorite(station) ? "★" : "☆";
+      favoriteButton.setAttribute("aria-label", isFavorite(station) ? "Remover dos favoritos" : "Adicionar aos favoritos");
+      favoriteButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        toggleFavorite(station);
+      });
+      row.append(name, favoriteButton);
+      item.append(row);
+      item.addEventListener("click", () => chooseStation(station, continent || currentContinent));
+      item.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          chooseStation(station, continent || currentContinent);
+        }
+      });
+      stationList.appendChild(item);
+    }
+
     function renderStationItems(continent) {
       stationList.innerHTML = "";
+      if (favoriteStations.length) {
+        const favoritesTitle = document.createElement("h2");
+        favoritesTitle.textContent = "Favoritas";
+        stationList.appendChild(favoritesTitle);
+        favoriteStations.forEach((station) => appendStationItem(station, continent, { label: stationListLabel(station) }));
+      }
+      const sectionTitle = document.createElement("h2");
+      sectionTitle.textContent = favoriteStations.length ? "Estações" : listTitle.textContent;
+      stationList.appendChild(sectionTitle);
       if (!currentStationList.length) {
         const empty = document.createElement("button");
         empty.className = "station-item";
@@ -1398,13 +1519,7 @@
         const key = stationDuplicateKey(label, station.place || station.country || "");
         if (rendered.has(key)) return;
         rendered.add(key);
-        const item = document.createElement("button");
-        item.className = "station-item";
-        const name = document.createElement("strong");
-        name.textContent = label;
-        item.append(name);
-        item.addEventListener("click", () => chooseStation(station, continent));
-        stationList.appendChild(item);
+        appendStationItem(station, continent, { label });
       });
     }
 
