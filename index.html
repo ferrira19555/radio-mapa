@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#15967f" />
-    <title>VendasControl - Download</title>
+    <title>Portal do Roberto - Aplicativos e Fotografias</title>
     <style>
       :root {
         color-scheme: light;
@@ -42,8 +42,8 @@
         align-items: center;
         padding: 26px 18px 34px;
         background:
-          linear-gradient(100deg, rgba(7, 14, 18, 0.88), rgba(12, 24, 26, 0.58), rgba(7, 14, 18, 0.82)),
-          url("assets/albuns/por-do-sol-e-paisagens/IMG_20240619_175235.jpg") center / cover no-repeat,
+          linear-gradient(100deg, rgba(7, 14, 18, 0.82), rgba(12, 24, 26, 0.38), rgba(7, 14, 18, 0.16)),
+          url("assets/capa-portal-roberto.jpg") center / cover no-repeat,
           #14201e;
         color: #ffffff;
       }
@@ -61,12 +61,16 @@
         margin-bottom: 42px;
       }
 
-      .brand img {
+      .portal-mark {
         width: 48px;
         height: 48px;
         border-radius: 12px;
-        background: var(--panel);
-        padding: 5px;
+        background: #ffffff;
+        color: #137d6d;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+        letter-spacing: -0.06em;
       }
 
       .brand strong {
@@ -620,8 +624,8 @@
         .hero {
           min-height: 88vh;
           background:
-            linear-gradient(180deg, rgba(7, 14, 18, 0.94), rgba(7, 14, 18, 0.72)),
-            url("assets/albuns/por-do-sol-e-paisagens/IMG_20240619_175235.jpg") center / cover no-repeat,
+            linear-gradient(180deg, rgba(7, 14, 18, 0.88), rgba(7, 14, 18, 0.48)),
+            url("assets/capa-portal-roberto.jpg") center / cover no-repeat,
             #14201e;
           align-items: start;
           padding-top: 22px;
@@ -641,21 +645,21 @@
     <section class="hero">
       <div class="hero-inner">
         <div class="brand">
-          <img src="assets/vendascontrol-icon.svg" alt="VendasControl" />
+          <span class="portal-mark" aria-hidden="true">PR</span>
           <div>
-            <strong>VendasControl</strong>
-            <span>App Android para vendas, fichas e dividas</span>
+            <strong>Portal do Roberto</strong>
+            <span>Aplicativos, ferramentas e fotografias</span>
           </div>
         </div>
 
-        <h1>VendasControl</h1>
+        <h1>Portal do Roberto</h1>
         <p class="lead">
-          Baixe o app para controlar clientes, vendas, fichas, produtos, compras,
-          abastecimentos e backups direto no celular, mesmo sem internet.
+          Aplicativos, ferramentas e fotografias em um só lugar. Conheça os projetos,
+          baixe os arquivos disponíveis e veja paisagens registradas na região.
         </p>
         <div class="hero-actions">
-          <a class="button" href="https://github.com/ferrira19555/radio-mapa/releases/download/downloads/VendasControl-240horas.apk" download>Baixar teste de 240 horas</a>
-          <a class="button secondary" href="#albuns">Ver fotos</a>
+          <a class="button" href="#downloadsTitle">Ver aplicativos</a>
+          <a class="button secondary" href="#albuns">Ver fotografias</a>
           <a class="button secondary" href="#instalacao">Como instalar</a>
         </div>
       </div>
@@ -743,7 +747,7 @@
       </section>
 <section class="download-section" aria-labelledby="downloadsTitle">
         <h2 id="downloadsTitle" class="section-title">Baixe aqui</h2>
-        <section class="downloads" aria-label="Downloads do VendasControl">
+        <section class="downloads" aria-label="Aplicativos e arquivos para download">
         <article class="download-card trial">
           <h3>Teste de 240 horas</h3>
           <p>Use para testar o VendasControl antes da liberacao definitiva.</p>
@@ -918,7 +922,7 @@
       <a class="button" id="photoDownload" href="#" download>Baixar foto sem metadados</a>
     </div>
     <footer class="footer">
-      VendasControl - download oficial do app Android
+      Portal do Roberto - aplicativos, ferramentas e fotografias
     </footer>
 
     <script>
