@@ -544,7 +544,7 @@
         inset: 0;
         z-index: 20;
         display: grid;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto 1fr auto;
         gap: 12px;
         padding: 14px;
         background: rgba(7, 14, 18, 0.92);
@@ -590,6 +590,10 @@
         border-radius: 8px;
         object-fit: contain;
         box-shadow: 0 20px 54px rgba(0, 0, 0, 0.36);
+      }
+
+      #photoDownload {
+        justify-self: center;
       }
       .footer {
         padding: 24px 18px;
@@ -651,7 +655,7 @@
         </p>
         <div class="hero-actions">
           <a class="button" href="https://github.com/ferrira19555/radio-mapa/releases/download/downloads/VendasControl-240horas.apk" download>Baixar teste de 240 horas</a>
-          <a class="button secondary" href="#albuns">Ver albuns</a>
+          <a class="button secondary" href="#albuns">Ver fotos</a>
           <a class="button secondary" href="#instalacao">Como instalar</a>
         </div>
       </div>
@@ -791,7 +795,7 @@
 
         <article class="download-card">
           <h3>Z1V1</h3>
-          <p>Gerenciador para musicas e videos. Aceita nome, frase, refrao ou link.</p>
+          <p>Gerenciador Android standalone de musicas e videos. Aceita nome, frase, refrao ou link.</p>
           <a class="button" href="https://github.com/ferrira19555/radio-mapa/releases/download/downloads/Z1v1w.zip" download>Baixar ZIP</a>
           <span class="file-name">https://github.com/ferrira19555/radio-mapa/releases/download/downloads/Z1v1w.zip</span>
         </article>
@@ -911,6 +915,7 @@
       <div class="lightbox-image-wrap">
         <img id="photoLightboxImage" alt="Foto ampliada" />
       </div>
+      <a class="button" id="photoDownload" href="#" download>Baixar foto sem metadados</a>
     </div>
     <footer class="footer">
       VendasControl - download oficial do app Android
@@ -1038,6 +1043,7 @@
       const photoLightboxImage = document.getElementById("photoLightboxImage");
       const photoLightboxTitle = document.getElementById("photoLightboxTitle");
       const photoLightboxClose = document.getElementById("photoLightboxClose");
+      const photoDownload = document.getElementById("photoDownload");
 
       function openPhotoLightbox(link) {
         const src = link.getAttribute("data-photo") || link.getAttribute("href");
@@ -1045,6 +1051,7 @@
         photoLightboxImage.src = src;
         photoLightboxImage.alt = image ? image.alt : "Foto ampliada";
         photoLightboxTitle.textContent = image ? image.alt : "Foto do album";
+        photoDownload.href = src;
         photoLightbox.hidden = false;
         document.body.style.overflow = "hidden";
       }
@@ -1065,6 +1072,12 @@
 
       const albumPhotoStrip = document.getElementById("albumPhotoStrip");
       const albumPhotoCount = document.getElementById("albumPhotoCount");
+      const albumSection = document.getElementById("albuns");
+      const downloadSection = document.querySelector(".download-section");
+
+      if (albumSection && downloadSection) {
+        downloadSection.insertAdjacentElement("afterend", albumSection);
+      }
 
       function renderAlbumPhotos(photos) {
         if (!albumPhotoStrip) return;
@@ -1185,7 +1198,6 @@
     </script>
   </body>
 </html>
-
 
 
 
